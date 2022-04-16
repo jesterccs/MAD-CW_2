@@ -7,4 +7,6 @@ import androidx.room.Query
 interface UserDao {
     @Query("SELECT * from User")
     suspend fun getAll(): List<User>
+
+
 }
