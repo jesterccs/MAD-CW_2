@@ -6,13 +6,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.room.Room
-import com.example.cw_2.data.User
 import com.example.cw_2.data.UserDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONTokener
 import java.io.BufferedReader
@@ -29,12 +27,12 @@ class SearchForMovies : AppCompatActivity() {
         val edit = findViewById<EditText>(R.id.edit)
         val retrieveBtn = findViewById<Button>(R.id.retrieve)
         val saveBtn = findViewById<Button>(R.id.save)
-
-        var stb = StringBuilder()
+        val tv = findViewById<TextView>(R.id.tv)
+        val stb = StringBuilder()
 
         retrieveBtn.setOnClickListener{
-            var editValue = edit.getText().toString()
-            var url_string = "https://www.omdbapi.com/?t=$editValue&apikey=c7e832d8";
+            val editValue = edit.text.toString()
+            val url_string = "https://www.omdbapi.com/?t=$editValue&apikey=c7e832d8";
             val url = URL(url_string)
             val con: HttpURLConnection = url.openConnection() as HttpURLConnection
 
@@ -43,7 +41,7 @@ class SearchForMovies : AppCompatActivity() {
                     // run the code of the coroutine in a new thread
                     stb.clear()
                     withContext(Dispatchers.IO) {
-                        var bf = BufferedReader(InputStreamReader(con.inputStream))
+                        val bf = BufferedReader(InputStreamReader(con.inputStream))
                         var line: String? = bf.readLine()
                         while (line != null) {
                             stb.append(line + "\n")
@@ -54,13 +52,14 @@ class SearchForMovies : AppCompatActivity() {
                 }
             }
         }
+
     }
+
     suspend fun parseJSON(stb: java.lang.StringBuilder) {
         val tv = findViewById<TextView>(R.id.tv)
-        // this contains the full JSON returned by the Web Service
-        //val json = JSONObject(stb.toString())
+
         val jsonObject = JSONTokener(stb.toString()).nextValue() as JSONObject
-        var movieDetails = java.lang.StringBuilder()
+        val movieDetails = java.lang.StringBuilder()
         val title = jsonObject.getString("Title")
         val year = jsonObject.getString("Year")
         val rated = jsonObject.getString("Rated")
@@ -71,6 +70,7 @@ class SearchForMovies : AppCompatActivity() {
         val writer = jsonObject.getString("Writer")
         val actors = jsonObject.getString("Actors")
         val plot = jsonObject.getString("Plot")
+
         movieDetails.append("Title : \"$title\" \n")
         movieDetails.append("Year : $year \n")
         movieDetails.append("Rated : $rated \n")
@@ -81,7 +81,7 @@ class SearchForMovies : AppCompatActivity() {
         movieDetails.append("Writer : $writer \n")
         movieDetails.append("Actors : $actors \n\n")
         movieDetails.append("Plot : \"$plot\" \n")
-        tv.setText(movieDetails)
+        tv.text = movieDetails
 
     }
 }
