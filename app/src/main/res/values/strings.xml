@@ -6,4 +6,5 @@
     <string name="retrieve_movie">Retrieve Movie</string>
     <string name="save_movie_to_database">Save movie to database</string>
     <string name="movie_name">Movie Name</string>
+    <string name="search">search</string>
 </resources>

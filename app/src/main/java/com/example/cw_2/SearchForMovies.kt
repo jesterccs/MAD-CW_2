@@ -1,5 +1,6 @@
 package com.example.cw_2
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -17,6 +18,7 @@ import org.json.JSONObject
 import org.json.JSONTokener
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -44,42 +46,32 @@ class SearchForMovies : AppCompatActivity() {
             val url_string = "https://www.omdbapi.com/?t=$editValue&apikey=c7e832d8";
             val url = URL(url_string)
             val con: HttpURLConnection = url.openConnection() as HttpURLConnection
-
-            runBlocking {
-                launch {
-                    stb.clear()
-                    withContext(Dispatchers.IO) {
-                        val bf = BufferedReader(InputStreamReader(con.inputStream))
-                        var line: String? = bf.readLine()
-                        while (line != null) {
-                            stb.append(line + "\n")
-                            line = bf.readLine()
+            try {
+                runBlocking {
+                    launch {
+                        stb.clear()
+                        withContext(Dispatchers.IO) {
+                            val bf = BufferedReader(InputStreamReader(con.inputStream))
+                            var line: String? = bf.readLine()
+                            while (line != null) {
+                                stb.append(line + "\n")
+                                line = bf.readLine()
+                            }
                         }
+                        parseJSON(stb)
                     }
-                    parseJSON(stb)
                 }
+            }catch(e : Exception){
+                tv.text="Enter valid movie name."
+                tv.setTextColor(Color.RED)
             }
         }
 
         saveBtn.setOnClickListener{
             runBlocking {
                 launch {
-                    /*val jsonObject = JSONTokener(stb.toString()).nextValue() as JSONObject
-                    val movieDetails = java.lang.StringBuilder()
-                    val title = jsonObject.getString("Title")
-                    val year = jsonObject.getString("Year")
-                    val rated = jsonObject.getString("Rated")
-                    val released = jsonObject.getString("Released")
-                    val runTime = jsonObject.getString("Runtime")
-                    val genre = jsonObject.getString("Genre")
-                    val director = jsonObject.getString("Director")
-                    val writer = jsonObject.getString("Writer")
-                    val actors = jsonObject.getString("Actors")
-                    val plot = jsonObject.getString("Plot")
-                    userDao.insertMovies(User(title,year,rated,released,runTime,genre,director,writer, actors,plot))*/
                     saveMovie(stb)
                 }
-
             }
         }
     }
@@ -120,7 +112,7 @@ class SearchForMovies : AppCompatActivity() {
         val db = Room.databaseBuilder(this, UserDatabase::class.java,"MyDatabase").build()
         val userDao = db.userDao()
         val jsonObject = JSONTokener(stb.toString()).nextValue() as JSONObject
-        val movieDetails = java.lang.StringBuilder()
+
         val title = jsonObject.getString("Title")
         val year = jsonObject.getString("Year")
         val rated = jsonObject.getString("Rated")
