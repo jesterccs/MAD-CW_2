@@ -13,5 +13,6 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovies(vararg user: User)
 
-
+    @Query("DELETE FROM User")
+    suspend fun deleteAll()
 }

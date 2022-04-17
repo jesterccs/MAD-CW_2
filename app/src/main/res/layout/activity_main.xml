@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@color/cardview_dark_background"
-    >
+    android:background="@color/cardview_dark_background">
 
     <Button
         android:id="@+id/addM"
@@ -44,8 +43,8 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="263dp"
-        android:layout_height="554dp"
+        android:layout_width="242dp"
+        android:layout_height="446dp"
         android:contentDescription="TODO"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
