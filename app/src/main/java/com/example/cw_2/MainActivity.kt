@@ -3,8 +3,10 @@ package com.example.cw_2
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.room.Room
 import com.example.cw_2.data.User
@@ -39,6 +41,10 @@ class MainActivity : AppCompatActivity() {
                     val movie5 = User("The Matrix", "1999", "R", "31 Mar 1999", "136 min", "Action, Sci-Fi", "Lana Wachowski, Lilly Wachowski", "Lilly Wachowski, Lana Wachowski", "Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss", "When a beautiful stranger leads computer hacker Neo to a forbidding underworld, he discovers the shocking truth--the life he knows is the elaborate deception of an evil cyber-intelligence.")
                     // Adding above data to the database
                     userDao.insertMovies(movie1, movie2, movie3, movie4, movie5)
+                    val myToast = Toast.makeText(applicationContext,"Successfully added.",Toast.LENGTH_SHORT)
+                    myToast.show()
+                    /*val toast = Toast.makeText(applicationContext, "Successfully added.", Toast.LENGTH_LONG)
+                    toast.show()*/
                     //userDao.deleteAll()
                 }
             }
