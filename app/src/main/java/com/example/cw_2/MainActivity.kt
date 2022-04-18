@@ -18,9 +18,12 @@ class MainActivity : AppCompatActivity() {
         val addMovies = findViewById<Button>(R.id.addM)
         val sFMovies = findViewById<Button>(R.id.searchM)
         val sActors = findViewById<Button>(R.id.searchA)
+        val searchText = findViewById<Button>(R.id.searchText)
 
         val db = Room.databaseBuilder(this, UserDatabase::class.java,"MyDatabase").build()
         val userDao = db.userDao()
+
+
 
         addMovies.setOnClickListener {
             runBlocking {
@@ -44,6 +47,10 @@ class MainActivity : AppCompatActivity() {
         sActors.setOnClickListener{
             val I = Intent(this, SearchForActors::class.java)
             startActivity(I)
+        }
+
+        searchText.setOnClickListener{
+
         }
     }
 }

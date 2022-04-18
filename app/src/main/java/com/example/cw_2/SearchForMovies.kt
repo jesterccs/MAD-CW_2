@@ -35,11 +35,11 @@ class SearchForMovies : AppCompatActivity() {
         val db = Room.databaseBuilder(this, UserDatabase::class.java,"MyDatabase").build()
         val userDao = db.userDao()
 
-        runBlocking {
+        /*runBlocking {
             launch {
                 userDao.deleteAll()
             }
-        }
+        }*/
 
         retrieveBtn.setOnClickListener{
             val editValue = edit.text.toString()

@@ -27,8 +27,12 @@ class SearchForActors : AppCompatActivity() {
 
             runBlocking {
                 launch {
-                    //var str = userDao.search(editValue).toString()
-                    tv.text = userDao.search(editValue).toString()
+                    val movieName = java.lang.StringBuilder()
+                    val mnList : List<String> = userDao.search(editValue).toList()
+                    for(i in mnList){
+                        movieName.append("* $i\n\n")
+                    }
+                    tv.text=movieName
                 }
                 //tv.text=stb
             }

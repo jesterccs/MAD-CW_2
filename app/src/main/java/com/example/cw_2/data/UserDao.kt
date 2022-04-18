@@ -17,7 +17,7 @@ interface UserDao {
     suspend fun deleteAll()
 
     @Query("SELECT title FROM User WHERE actors LIKE '%' || :value || '%'" )
-    suspend fun search(value: String) : List<User>
+    suspend fun search(value: String) : List<String>
 
     @Query("SELECT actors From User")
     suspend fun selectActors() : List<String>
