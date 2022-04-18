@@ -21,14 +21,9 @@ class MovieResults : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_results)
 
-        //val url_string : String
-
         var MovieName = intent.getStringExtra("MovieName")
         val stb = StringBuilder()
-        val mutableList = mutableListOf<String>()
         val stb1 = StringBuilder()
-        var endCount = 100
-        var ss = " "
         var xx = 0
 
         for(i in 1..10){
@@ -48,34 +43,33 @@ class MovieResults : AppCompatActivity() {
                             }
                         }
                         stb1.append(parseJSON(stb))
-                        val jsonObject = JSONTokener(stb.toString()).nextValue() as JSONObject
-                        ss = jsonObject.getString("totalResults")
-                        //xx = ss.toInt()
-                        //mutableList.add(i-1,stb.toString())
-                        //stb1.add(i-1,stb.toString())
+                        /*val jsonObject = JSONTokener(stb.toString()).nextValue() as JSONObject
+                        ss = jsonObject.getString("totalResults")*/
+
                     }
                 }
             }catch (e : Exception){
 
             }
+            ++xx
         }
 
         textView1.text = stb1
+        textView2.text = xx.toString()
     }
 
     suspend fun parseJSON(stb: java.lang.StringBuilder) : StringBuilder{
         // this contains the full JSON returned by the Web Service
         val json = JSONObject(stb.toString())
-        // Information about all the books extracted by this function
+        // Information about all the movies extracted by this function
         var allMovies = java.lang.StringBuilder()
         var jsonArray: JSONArray = json.getJSONArray("Search")
-        // extract all the books from the JSON array
+        // extract all the movies from the JSON array
         for (i in 0 until jsonArray.length()) {
             val movie: JSONObject = jsonArray[i] as JSONObject // this is a json object
             // extract the title
             val title = movie["Title"] as String
-            //val title = volInfo["title"] as String
-            allMovies.append("\"$title\" ")
+            allMovies.append("* $title ")
             allMovies.append("\n\n")
 
         }

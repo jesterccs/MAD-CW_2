@@ -27,23 +27,21 @@ class SearchForMovies : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_searchformovies)
-        val edit = findViewById<EditText>(R.id.edit)
-        val retrieveBtn = findViewById<Button>(R.id.retrieve)
-        val saveBtn = findViewById<Button>(R.id.save)
-        val tv = findViewById<TextView>(R.id.tv)
-        val stb = StringBuilder()
+        val edit = findViewById<EditText>(R.id.edit)                            // Edit text button
+        val retrieveBtn = findViewById<Button>(R.id.retrieve)                   // retrieve button
+        val saveBtn = findViewById<Button>(R.id.save)                           // save to the database button
+        val tv = findViewById<TextView>(R.id.tv)                                // textview that displays results
+        val stb = StringBuilder()                                               // to store data that received from OMDb API
         val db = Room.databaseBuilder(this, UserDatabase::class.java,"MyDatabase").build()
         val userDao = db.userDao()
 
-        /*runBlocking {
-            launch {
-                userDao.deleteAll()
-            }
-        }*/
 
+        /*
+        - THis will retrieve movie details that user searched
+         */
         retrieveBtn.setOnClickListener{
-            val editValue = edit.text.toString()
-            val url_string = "https://www.omdbapi.com/?t=$editValue&apikey=c7e832d8";
+            val editValue = edit.text.toString()                                            // to store value of the edit text
+            val url_string = "https://www.omdbapi.com/?t=$editValue&apikey=c7e832d8";       // link to the OMDb API
             val url = URL(url_string)
             val con: HttpURLConnection = url.openConnection() as HttpURLConnection
             try {
@@ -58,27 +56,53 @@ class SearchForMovies : AppCompatActivity() {
                                 line = bf.readLine()
                             }
                         }
-                        parseJSON(stb)
+                        tv.text = parseJSON(stb).toString()
                     }
                 }
             }catch(e : Exception){
-                tv.text="Enter valid movie name."
+                tv.text="Enter a valid movie name."
                 tv.setTextColor(Color.RED)
             }
         }
 
+
+        /*
+        - Act as same way as the retrieve button does.
+        - When user click this button, it will store the retrieved movie details to the database.
+         */
         saveBtn.setOnClickListener{
-            runBlocking {
-                launch {
-                    saveMovie(stb)
+            val editValue = edit.text.toString()                                            // to store value of the edit text
+            val url_string = "https://www.omdbapi.com/?t=$editValue&apikey=c7e832d8";       // link to the OMDb API
+            val url = URL(url_string)
+            val con: HttpURLConnection = url.openConnection() as HttpURLConnection
+            try {
+                runBlocking {
+                    launch {
+                        stb.clear()
+                        withContext(Dispatchers.IO) {
+                            val bf = BufferedReader(InputStreamReader(con.inputStream))
+                            var line: String? = bf.readLine()
+                            while (line != null) {
+                                stb.append(line + "\n")
+                                line = bf.readLine()
+                            }
+                        }
+                        parseJSON(stb)                          // parser function
+                        saveMovie(stb)                          // save movie function
+                    }
                 }
+            }catch(e : Exception){
+                tv.text="Enter a valid movie name."
+                tv.setTextColor(Color.RED)
             }
         }
     }
 
-    private suspend fun parseJSON(stb: java.lang.StringBuilder) {
-        val tv = findViewById<TextView>(R.id.tv)
 
+    /*
+    - Parser function
+     */
+    private suspend fun parseJSON(stb: java.lang.StringBuilder) : StringBuilder{
         val jsonObject = JSONTokener(stb.toString()).nextValue() as JSONObject
         val movieDetails = java.lang.StringBuilder()
         val title = jsonObject.getString("Title")
@@ -102,8 +126,7 @@ class SearchForMovies : AppCompatActivity() {
         movieDetails.append("Writer : $writer \n")
         movieDetails.append("Actors : $actors \n\n")
         movieDetails.append("Plot : \"$plot\" \n")
-        tv.text = movieDetails
-
+        return movieDetails
     }
 
 
