@@ -3,12 +3,16 @@ package com.example.cw_2
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.Button
+import androidx.appcompat.app.AlertDialog
 import androidx.room.Room
 import com.example.cw_2.data.User
 import com.example.cw_2.data.UserDatabase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.android.synthetic.main.alert_dialog.*
+import kotlinx.android.synthetic.main.alert_dialog.view.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         val db = Room.databaseBuilder(this, UserDatabase::class.java,"MyDatabase").build()
         val userDao = db.userDao()
 
-
+        var MovieName : String
 
         addMovies.setOnClickListener {
             runBlocking {
@@ -49,8 +53,27 @@ class MainActivity : AppCompatActivity() {
             startActivity(I)
         }
 
-        searchText.setOnClickListener{
 
+        searchText.setOnClickListener{
+            val mDialogView = LayoutInflater.from(this).inflate(R.layout.alert_dialog,null)
+            val mBuilder = AlertDialog.Builder(this)
+                .setView(mDialogView)
+                .setTitle("Search")
+            val mAlertDialog = mBuilder.show()
+
+            mDialogView.search.setOnClickListener{
+                mAlertDialog.dismiss()
+                MovieName = mDialogView.dialogEt.text.toString()
+                val i = Intent(this, MovieResults :: class.java).apply {
+                    putExtra("MovieName", MovieName)
+                }
+                startActivity(i)
+            }
+
+            mDialogView.cancelB.setOnClickListener{
+                mAlertDialog.dismiss()
+            }
         }
+
     }
 }
